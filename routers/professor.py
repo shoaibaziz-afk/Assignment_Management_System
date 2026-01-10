@@ -1,20 +1,26 @@
+"""
+Professor endpoints
+"""
+
 from fastapi import APIRouter, Depends
 from database import SessionLocal
 from models import Assignment
 from schemas import AssignmentCreate
-from dependencies import get_current_user
+from dependencies import professor_only
+import json
 
 router = APIRouter(prefix="/professor")
 
 @router.post("/assignments")
-def create_assignment(data: AssignmentCreate, user=Depends(get_current_user)):
+def create_assignment(data: AssignmentCreate, user=Depends(professor_only)):
     db = SessionLocal()
-    a = Assignment(
+    assignment = Assignment(
         title=data.title,
         description=data.description,
-        constraints=str(data.constraints),
+        constraints=json.dumps(data.constraints),
         professor_id=1
     )
-    db.add(a)
+    db.add(assignment)
     db.commit()
     return {"message": "Assignment created"}
+

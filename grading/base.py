@@ -1,12 +1,23 @@
-class GradingResult:
-    def __init__(self, score, violations, flags):
-        self.score = score
-        self.violations = violations
-        self.flags = flags
+"""
+This file is responsible for:
+- Creating the database connection
+- Providing a session object for DB operations
+"""
 
-class BaseGrader:
-    def parse(self, file_path: str):
-        raise NotImplementedError
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-    def grade(self, parsed_data):
-        raise NotImplementedError
+# SQLite database for MVP (simple and file-based)
+DATABASE_URL = "sqlite:///./mvp.db"
+
+# Create database engine
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}  # Needed for SQLite
+)
+
+# SessionLocal is used whenever we talk to the database
+SessionLocal = sessionmaker(bind=engine)
+
+# Base class for all database models
+Base = declarative_base()
