@@ -10,24 +10,65 @@ import (
 )
 
 func main() {
-	// Connect to DB
+	// ---------------------------------------------
+	// 1. Connect to database
+	// ---------------------------------------------
 	db.Connect()
 
-	// Auto-create tables
+	// ---------------------------------------------
+	// 2. Auto-migrate database tables
+	// (Creates tables if they do not exist)
+	// ---------------------------------------------
 	db.DB.AutoMigrate(
 		&models.Professor{},
 		&models.Course{},
 		&models.Assignment{},
 	)
 
-	// Initialize router
+	// ---------------------------------------------
+	// 3. Initialize Gin router
+	// ---------------------------------------------
 	r := gin.Default()
 
-	// Public routes
+	// ---------------------------------------------
+	// 4. Load HTML templates for GUI
+	// ---------------------------------------------
+	r.LoadHTMLGlob("templates/*")
+
+	// =============================================
+	// ========== UI ROUTES (GUI) ===================
+	// =============================================
+
+	ui := r.Group("/ui")
+
+	// Signup pages
+	ui.GET("/signup", handlers.ShowSignup)
+	ui.POST("/signup", handlers.HandleSignup)
+
+	// Login pages
+	ui.GET("/login", handlers.ShowLogin)
+	ui.POST("/login", handlers.HandleLogin)
+
+	// Dashboard
+	ui.GET("/dashboard", handlers.ShowDashboard)
+
+	// Course management
+	ui.GET("/add-course", handlers.ShowAddCourse)
+	ui.POST("/add-course", handlers.HandleAddCourse)
+
+	// Assignment management
+	ui.GET("/add-assignment", handlers.ShowAddAssignment)
+	ui.POST("/add-assignment", handlers.HandleAddAssignment)
+
+	// =============================================
+	// ========== API ROUTES (JSON) =================
+	// =============================================
+
+	// Professor authentication (API)
 	r.POST("/professor/signup", handlers.ProfessorSignup)
 	r.POST("/professor/login", handlers.ProfessorLogin)
 
-	// Protected professor routes
+	// Protected professor API routes
 	prof := r.Group("/professor")
 	prof.Use(middleware.AuthMiddleware())
 
@@ -35,6 +76,8 @@ func main() {
 	prof.GET("/courses", handlers.ListCourses)
 	prof.POST("/assignment", handlers.AddAssignment)
 
-	// Start server
+	// ---------------------------------------------
+	// 5. Start the HTTP server
+	// ---------------------------------------------
 	r.Run(":8000")
 }
