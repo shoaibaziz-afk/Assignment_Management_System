@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Professor Signup</title>
+    <title>Professor Login</title>
 </head>
 <body>
-    <h2>Professor Signup</h2>
+    <h2>Professor Login</h2>
 
-    <form method="POST" action="/ui/signup">
+    <form method="POST" action="/ui/login">
         <label>Email:</label><br>
         <input type="email" name="email" required><br><br>
 
         <label>Password:</label><br>
         <input type="password" name="password" required><br><br>
 
-        <label>Department:</label><br>
-        <input type="text" name="department" required><br><br>
-
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
     </form>
 
-    <p>Already registered? <a href="/ui/login">Login</a></p>
+    <p>New professor? <a href="/ui/signup">Sign up</a></p>
 </body>
 </html>
+

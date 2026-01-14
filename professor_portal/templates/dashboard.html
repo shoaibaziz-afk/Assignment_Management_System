@@ -6,11 +6,26 @@
 <body>
     <h2>Professor Dashboard</h2>
 
-    <ul>
-        <li><a href="/ui/add-course">Add Course</a></li>
-        <li><a href="/ui/add-assignment">Add Assignment</a></li>
-    </ul>
+    <h3>My Courses</h3>
 
-    <p>(Course listing will come next)</p>
+    {{ if .Courses }}
+        <ul>
+        {{ range .Courses }}
+            <li>
+                <strong>{{ .Name }}</strong>
+                ({{ .Semester }})
+                <br>
+                <a href="/ui/course/{{ .ID }}">View Course</a>
+            </li>
+            <br>
+        {{ end }}
+        </ul>
+    {{ else }}
+        <p>No courses added yet.</p>
+    {{ end }}
+
+    <hr>
+
+    <a href="/ui/add-course">+ Add New Course</a>
 </body>
 </html>

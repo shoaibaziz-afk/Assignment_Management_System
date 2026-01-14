@@ -8,6 +8,7 @@ A professor can teach multiple courses.
 */
 type Professor struct {
 	gorm.Model
+	Name       string
 	Email      string `gorm:"unique;not null"`
 	Password   string
 	Department string

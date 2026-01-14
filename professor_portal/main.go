@@ -11,13 +11,12 @@ import (
 
 func main() {
 	// ---------------------------------------------
-	// 1. Connect to database
+	// 1. Connect to the database
 	// ---------------------------------------------
 	db.Connect()
 
 	// ---------------------------------------------
-	// 2. Auto-migrate database tables
-	// (Creates tables if they do not exist)
+	// 2. Auto-migrate tables (creates if not exist)
 	// ---------------------------------------------
 	db.DB.AutoMigrate(
 		&models.Professor{},
@@ -31,44 +30,47 @@ func main() {
 	r := gin.Default()
 
 	// ---------------------------------------------
-	// 4. Load HTML templates for GUI
+	// 4. Load HTML templates (GUI)
 	// ---------------------------------------------
 	r.LoadHTMLGlob("templates/*")
 
 	// =============================================
-	// ========== UI ROUTES (GUI) ===================
+	// ========== UI ROUTES (BROWSER) ===============
 	// =============================================
 
 	ui := r.Group("/ui")
 
-	// Signup pages
+	// ---------- Auth pages ----------
 	ui.GET("/signup", handlers.ShowSignup)
 	ui.POST("/signup", handlers.HandleSignup)
 
-	// Login pages
 	ui.GET("/login", handlers.ShowLogin)
 	ui.POST("/login", handlers.HandleLogin)
 
-	// Dashboard
+	// ---------- Dashboard ----------
 	ui.GET("/dashboard", handlers.ShowDashboard)
 
-	// Course management
+	// ---------- Course pages ----------
 	ui.GET("/add-course", handlers.ShowAddCourse)
 	ui.POST("/add-course", handlers.HandleAddCourse)
 
-	// Assignment management
-	ui.GET("/add-assignment", handlers.ShowAddAssignment)
+	// 🔥 NEW ROUTE (THIS IS THE IMPORTANT ONE)
+	// View a specific course and its assignments
+	ui.GET("/course/:id", handlers.ShowCourseDetail)
+
+	// ---------- Assignment creation ----------
+	// Assignment is ALWAYS created inside a course
 	ui.POST("/add-assignment", handlers.HandleAddAssignment)
 
 	// =============================================
 	// ========== API ROUTES (JSON) =================
 	// =============================================
 
-	// Professor authentication (API)
+	// Professor API auth
 	r.POST("/professor/signup", handlers.ProfessorSignup)
 	r.POST("/professor/login", handlers.ProfessorLogin)
 
-	// Protected professor API routes
+	// Protected professor APIs
 	prof := r.Group("/professor")
 	prof.Use(middleware.AuthMiddleware())
 
@@ -77,7 +79,7 @@ func main() {
 	prof.POST("/assignment", handlers.AddAssignment)
 
 	// ---------------------------------------------
-	// 5. Start the HTTP server
+	// 5. Start HTTP server
 	// ---------------------------------------------
 	r.Run(":8000")
 }
