@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ .Course.Title }}</title>
+</head>
+<body>
+    <h2>{{ .Course.Title }}</h2>
+
+    <p>{{ .Course.Description }}</p>
+    <p><b>Type:</b> {{ .Course.CourseType }}</p>
+    <p><b>Department:</b> {{ .Course.OwningDepartment }}</p>
+
+    <hr>
+
+    <h3>Offer this course in a semester</h3>
+
+    <form method="POST" action="/ui/courses/{{ .Course.ID }}/offer">
+        <label>Academic Term:</label><br>
+        <input type="text" name="academic_term" placeholder="Fall 2026" required><br><br>
+
+        <label>Semester:</label><br>
+        <input type="text" name="semester" required><br><br>
+
+        <button type="submit">Offer Course</button>
+    </form>
+
+    <hr>
+
+    <h3>Past / Current Offerings</h3>
+
+    <ul>
+        {{ range .Offerings }}
+            <li>{{ .AcademicTerm }} — Semester {{ .Semester }}</li>
+        {{ else }}
+            <li>No offerings yet.</li>
+        {{ end }}
+    </ul>
+
+    <br>
+    <a href="/ui/courses">Back to Courses</a>
+</body>
+</html>

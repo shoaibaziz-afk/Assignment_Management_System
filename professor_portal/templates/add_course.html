@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Course</title>
+    <title>Create Course</title>
 </head>
 <body>
-    <h2>Add Course</h2>
+    <h2>Create Course</h2>
 
-    <form method="POST" action="/ui/add-course">
-        <label>Course Name:</label><br>
-        <input type="text" name="name" required><br><br>
+    <form method="POST" action="/ui/courses/new">
+        <label>Course Title:</label><br>
+        <input type="text" name="title" required><br><br>
 
-        <label>Semester:</label><br>
-        <input type="text" name="semester" required><br><br>
+        <label>Description:</label><br>
+        <textarea name="description" required></textarea><br><br>
 
-        <label>Department:</label><br>
-        <input type="text" name="department" required><br><br>
+        <label>Course Type:</label><br>
+        <select name="course_type" required>
+            <option value="">-- Select --</option>
+            <option value="MANDATORY">Mandatory</option>
+            <option value="DEPARTMENT_ELECTIVE">Department Elective</option>
+            <option value="OPEN_ELECTIVE">Open Elective</option>
+        </select><br><br>
 
-        <button type="submit">Add Course</button>
+        <button type="submit">Create Course</button>
     </form>
+
+    <br>
+    <a href="/ui/courses">Back</a>
 </body>
 </html>

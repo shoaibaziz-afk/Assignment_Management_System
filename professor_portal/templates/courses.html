@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Courses</title>
+</head>
+<body>
+    <h2>My Courses</h2>
+
+    <a href="/ui/courses/new">+ Create Course</a>
+    <hr>
+
+    {{ range .Courses }}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            <h3>{{ .Title }}</h3>
+            <p><b>Type:</b> {{ .CourseType }}</p>
+            <p><b>Department:</b> {{ .OwningDepartment }}</p>
+
+            <a href="/ui/courses/{{ .ID }}">View Course</a>
+        </div>
+    {{ else }}
+        <p>No courses created yet.</p>
+    {{ end }}
+</body>
+</html>

@@ -3,44 +3,42 @@ package main
 import (
 	"professor_portal/db"
 	"professor_portal/handlers"
-	"professor_portal/middleware"
 	"professor_portal/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// ---------------------------------------------
-	// 1. Connect to the database
-	// ---------------------------------------------
+	// --------------------------------------------------
+	// 1. Connect to database
+	// --------------------------------------------------
 	db.Connect()
 
-	// ---------------------------------------------
-	// 2. Auto-migrate tables (creates if not exist)
-	// ---------------------------------------------
+	// --------------------------------------------------
+	// 2. Auto-migrate database tables
+	// --------------------------------------------------
 	db.DB.AutoMigrate(
 		&models.Professor{},
 		&models.Course{},
-		&models.Assignment{},
+		&models.CourseOffering{},
 	)
 
-	// ---------------------------------------------
+	// --------------------------------------------------
 	// 3. Initialize Gin router
-	// ---------------------------------------------
+	// --------------------------------------------------
 	r := gin.Default()
 
-	// ---------------------------------------------
-	// 4. Load HTML templates (GUI)
-	// ---------------------------------------------
+	// --------------------------------------------------
+	// 4. Load professor templates
+	// --------------------------------------------------
 	r.LoadHTMLGlob("templates/*")
 
-	// =============================================
-	// ========== UI ROUTES (BROWSER) ===============
-	// =============================================
-
+	// --------------------------------------------------
+	// 5. UI routes (Professor Portal)
+	// --------------------------------------------------
 	ui := r.Group("/ui")
 
-	// ---------- Auth pages ----------
+	// ---------- Authentication ----------
 	ui.GET("/signup", handlers.ShowSignup)
 	ui.POST("/signup", handlers.HandleSignup)
 
@@ -50,36 +48,17 @@ func main() {
 	// ---------- Dashboard ----------
 	ui.GET("/dashboard", handlers.ShowDashboard)
 
-	// ---------- Course pages ----------
-	ui.GET("/add-course", handlers.ShowAddCourse)
-	ui.POST("/add-course", handlers.HandleAddCourse)
+	// ---------- Courses (ALL course logic lives in courses.go) ----------
+	ui.GET("/courses", handlers.ListCourses)
 
-	// 🔥 NEW ROUTE (THIS IS THE IMPORTANT ONE)
-	// View a specific course and its assignments
-	ui.GET("/course/:id", handlers.ShowCourseDetail)
+	ui.GET("/courses/new", handlers.ShowAddCourse)
+	ui.POST("/courses/new", handlers.HandleAddCourse)
 
-	// ---------- Assignment creation ----------
-	// Assignment is ALWAYS created inside a course
-	ui.POST("/add-assignment", handlers.HandleAddAssignment)
+	ui.GET("/courses/:id", handlers.ShowCourse)
+	ui.POST("/courses/:id/offer", handlers.OfferCourse)
 
-	// =============================================
-	// ========== API ROUTES (JSON) =================
-	// =============================================
-
-	// Professor API auth
-	r.POST("/professor/signup", handlers.ProfessorSignup)
-	r.POST("/professor/login", handlers.ProfessorLogin)
-
-	// Protected professor APIs
-	prof := r.Group("/professor")
-	prof.Use(middleware.AuthMiddleware())
-
-	prof.POST("/course", handlers.AddCourse)
-	prof.GET("/courses", handlers.ListCourses)
-	prof.POST("/assignment", handlers.AddAssignment)
-
-	// ---------------------------------------------
-	// 5. Start HTTP server
-	// ---------------------------------------------
+	// --------------------------------------------------
+	// 6. Start server
+	// --------------------------------------------------
 	r.Run(":8000")
 }

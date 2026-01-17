@@ -2,38 +2,36 @@ package models
 
 import "gorm.io/gorm"
 
-/*
-Professor represents a faculty member.
-A professor can teach multiple courses.
-*/
+// --------------------
+// Professor
+// --------------------
 type Professor struct {
 	gorm.Model
 	Name       string
-	Email      string `gorm:"unique;not null"`
+	Email      string `gorm:"unique"`
 	Password   string
 	Department string
 }
 
-/*
-Course represents a course taught by a professor.
-*/
+// --------------------
+// Course (catalog-level)
+// --------------------
 type Course struct {
 	gorm.Model
-	Name        string
-	Semester    string
-	Department  string
-	ProfessorID uint
+	Title              string
+	Description        string
+	OwningDepartment   string
+	CourseType         string // MANDATORY | DEPARTMENT_ELECTIVE | OPEN_ELECTIVE
+	CreatedByProfessor uint
 }
 
-/*
-Assignment belongs to a course.
-Constraints are kept SIMPLE for MVP.
-*/
-type Assignment struct {
+// --------------------
+// Course Offering (semester-specific)
+// --------------------
+type CourseOffering struct {
 	gorm.Model
-	Title        string
-	Deadline     string
-	TimeAllotted int // in minutes
-	AIUsageLimit int
 	CourseID     uint
+	ProfessorID  uint
+	AcademicTerm string // e.g. Fall 2026
+	Semester     string // e.g. 6
 }
