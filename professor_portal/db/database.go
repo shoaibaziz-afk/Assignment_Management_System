@@ -10,7 +10,10 @@ var DB *gorm.DB
 
 // Connect initializes the database connection
 func Connect() {
-	database, err := gorm.Open(sqlite.Open("professor.db"), &gorm.Config{})
+	database, err := gorm.Open(
+		sqlite.Open("/home/shoaibaziz/assignment_system/db/professor.db"),
+		&gorm.Config{},
+	)
 	if err != nil {
 		panic("Failed to connect to database")
 	}

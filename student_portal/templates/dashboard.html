@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+</head>
+<body>
+<h2>Welcome, {{ .Student.Name }}</h2>
+
+<h3>Mandatory Courses</h3>
+<ul>
+{{ range .Mandatory }}
+    <li>{{ .Title }} ({{ .AcademicTerm }}) — Enrolled</li>
+{{ else }}
+    <li>No mandatory courses</li>
+{{ end }}
+</ul>
+
+<h3>Department Electives</h3>
+<ul>
+{{ range .DeptElectives }}
+    <li>{{ .Title }} ({{ .AcademicTerm }}) — <button>Enroll</button></li>
+{{ else }}
+    <li>No department electives</li>
+{{ end }}
+</ul>
+
+<h3>Open Electives</h3>
+<ul>
+{{ range .OpenElectives }}
+    <li>{{ .Title }} ({{ .AcademicTerm }}) — <button>Enroll</button></li>
+{{ else }}
+    <li>No open electives</li>
+{{ end }}
+</ul>
+
+</body>
+</html>
